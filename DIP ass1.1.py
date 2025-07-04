@@ -94,7 +94,10 @@ for video_file in VIDEO_LIST:
         if frame_idx == 0:
             night_mode = is_night_frame(frame)
         if night_mode:
-            frame = increase_brightness(frame)
+           avg_brightness = np.mean(cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY))
+           boost = 50 if avg_brightness < 70 else 20 if avg_brightness < 90 else 0
+           if boost > 0:
+               frame = increase_brightness(frame, boost)
         frame = blur_faces(frame, face_cascade)
         if frame_idx < len(talking_frames):
             frame = overlay_talking_video(frame, talking_frames[frame_idx])
